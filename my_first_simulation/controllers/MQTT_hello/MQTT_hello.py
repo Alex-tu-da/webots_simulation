@@ -15,28 +15,33 @@ import paho.mqtt.client as mqtt
 # === MQTT-Konfiguration ===
 BROKER = "localhost"
 PORT = 1883
-MY_ID = "1"
+TIME_STEP = 100
+robot = Robot()
+MY_ID = "" +robot.getName()
 
 data = {}
-
+helloRob = []
 
 # === MQTT-Callbackfunktionen ===
 def on_connect(client, userdata, flags, rc):
     print(f"[{MY_ID}] Verbunden mit MQTT (Code {rc})")
     client.subscribe("robot_pos/all")
+    client.subscribe(f"robot/{MY_ID}")
 
 
 # on_message:
 def on_message(client, userdata, msg):
     global data
     try:
-        incoming = json.loads(msg.payload.decode())
-        rid = incoming["id"]
-        data[rid] = incoming
-        data[rid] = {
-            "position": incoming["position"],
-            "angle": incoming["angle"]
-        }
+        if msg.topic == "robot_pos/all":
+            incoming = json.loads(msg.payload.decode())
+            rid = incoming["id"]
+            data[rid] = {
+                "position": incoming["position"],
+                "angle": incoming["angle"]
+            }
+        elif msg.topic == f"robot/{MY_ID}":
+            print(f"Nachricht empfangen: {msg.payload.decode()}")
     except Exception as e:
         print(f"⚠️ Fehler beim Empfangen: {e}")
 
@@ -49,9 +54,6 @@ client.connect(BROKER, PORT)
 client.loop_start()
 
 # === Roboter-Initialisierung ===
-robot = Robot()
-TIME_STEP = 100
-
 gps = robot.getDevice("gps")
 gps.enable(TIME_STEP)
 
@@ -67,15 +69,8 @@ led0 = robot.getDevice("led0")
 led1 = robot.getDevice("led1")
 
 # === Arena-Grenzen & Steuerungskonstanten ===
-x_max = 2
+x_max = 1
 y_max = 1
-<<<<<<< HEAD
-outside_diff = 0.1
-speed_wall = 500
-turn_speed_wall = 500
-turn_follow_speed = 200
-follow_speed = 200
-diff_angle = 5
 
 outside_diff = 0.1
 speed_wall = 500
@@ -108,8 +103,6 @@ def set_motor_speeds(l, r):
     left_motor.setVelocity((7 / 1000) * l)
     right_motor.setVelocity((7 / 1000) * r)
 
-def angle_calculate(x, y):
-    return -math.atan2(y - pos()[1], x - pos()[0]) + math.pi / 2
 
 def send_position():
     try:
@@ -121,6 +114,12 @@ def send_position():
             "angle": angle
         }
         client.publish("robot_pos/all", json.dumps(msg))
+
+        data[MY_ID] = {
+            "position": [x, y],
+            "angle": angle
+        }
+
     except Exception as e:
         print(f"❌ Fehler beim Senden der Position: {e}")
 
@@ -130,11 +129,6 @@ def is_inside_arena():
     return (x_max - outside_diff > data[MY_ID]["position"][0] > outside_diff
             and y_max - outside_diff > data[MY_ID]["position"][1] > outside_diff)
 
-
-def turn_motors_to(x, y):
-    target_angle = angle_calculate(x, y)
-    current_angle = degree_rad()
-    
 def angle_calculate(target_id):
     src = data[MY_ID]["position"]
     dst = data[target_id]["position"]
@@ -150,35 +144,11 @@ def turn_motors_to(obj_id):
         return
     target_angle = angle_calculate(obj_id)
     current_angle = math.radians(data[MY_ID]["angle"])
-    
     error = (target_angle - current_angle + math.pi) % (2 * math.pi) - math.pi
 
     output = pd.update(error)
     output = max(-turn_follow_speed, min(turn_follow_speed, output))
 
-    if -math.pi / 2 < error < math.pi / 2:
-        left = output
-        right = -output
-        set_motor_speeds(left + follow_speed, right + follow_speed)
-    else:
-        left = output
-        right = -output
-        set_motor_speeds(left, right)
-
-
-def turn_from_wand_mith_motors():
-    x = pos()[0]
-    y = pos()[1]
-    target_angle = None
-
-    if x < outside_diff and y < outside_diff:
-        target_angle = 45
-    elif x < outside_diff and y > y_max - outside_diff:
-        target_angle = 135
-    elif x > x_max - outside_diff and y < outside_diff:
-        target_angle = 315
-    elif x > x_max - outside_diff and y > y_max - outside_diff:
-        target_angle = 225
     if not -math.radians(diff_angle_follow) < error < math.radians(diff_angle_follow):
         left = output
         right = -output
@@ -202,7 +172,7 @@ def turn_from_wand_mith_motors():
         target_angle = 45 + 90 * 3
     elif x > x_max - outside_diff and y > y_max - outside_diff:
         target_angle = 45 + 90 * 2
-        
+
     elif x < outside_diff:
         target_angle = 90
     elif y < outside_diff:
@@ -211,19 +181,6 @@ def turn_from_wand_mith_motors():
         target_angle = 270
     elif y > y_max - outside_diff:
         target_angle = 180
-
-    if target_angle is None:
-        return
-
-    target_angle = math.radians(target_angle)
-    current_angle = degree_rad()
-    error = (target_angle - current_angle + math.pi) % (2 * math.pi) - math.pi
-
-    if not -math.radians(diff_angle) < error < math.radians(diff_angle):
-        output = pd.update(error)
-        output = max(-turn_speed_wall, min(turn_speed_wall, output))
-        set_motor_speeds(output, -output)
-        
     if target_angle is None:
         return
     target_angle = math.radians(target_angle)
@@ -238,23 +195,31 @@ def turn_from_wand_mith_motors():
         left = output
         right = -output
         set_motor_speeds(left, right)
-        
     else:
         set_motor_speeds(speed_wall, speed_wall)
 
+def check_and_send_hello():
+    for rid in data:
+        if rid == MY_ID:
+            continue
+        dist = dist_calculate(rid)
+        if dist < 0.2:
+            if rid not in helloRob:
+                helloRob.append(rid)  # 👈 ID merken
+                nachricht = f"Hallo von Roboter {MY_ID}"
+                client.publish(f"robot/{rid}", nachricht)
+                print(f"Sende an robot/{rid}: {nachricht}")
 
 # === Startbedingung ===
 set_motor_speeds(0, 0)
-send_position()
 
 # === Hauptschleife ===
 while robot.step(TIME_STEP) != -1:
     send_position()
     
+    check_and_send_hello()
     if is_inside_arena():
-        led0.set(1)
-        
         set_motor_speeds(random.randint(200, 500), random.randint(200, 500))
+
     else:
-        led0.set(0)
         turn_from_wand_mith_motors()

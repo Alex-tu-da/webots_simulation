@@ -26,8 +26,6 @@ tof.enable(TIME_STEP)
 
 
 # === Hilfsfunktionen ===
-
-
 def set_motor_speeds(m):
     left_motor.setVelocity((7 / 1000) * m)
     right_motor.setVelocity((7 / 1000) * m)

@@ -32,14 +32,12 @@ def on_message(client, userdata, msg):
     try:
         incoming = json.loads(msg.payload.decode())
         rid = incoming["id"]
-<<<<<<< HEAD
+
         data[rid] = incoming
-=======
         data[rid] = {
             "position": incoming["position"],
             "angle": incoming["angle"]
         }
->>>>>>> 79011dd (Labyrinth)
     except Exception as e:
         print(f"⚠️ Fehler beim Empfangen: {e}")
 
