@@ -58,7 +58,7 @@ while robot.step(TIME_STEP) != -1:
         distance = tof.getValue()
         a = 1
         if distance < 30:
-            set_motor_speeds(0)
+            rotation(speed)
         else:
             set_motor_speeds(400)
     else:
