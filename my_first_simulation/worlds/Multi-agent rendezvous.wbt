@@ -1,0 +1,125 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/Floor.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.513285027282191 0.5045526092553994 -0.6942370958552192 1.9439194967361648
+  position -1.2271654610424358 2.210669474200915 6.678191400903884
+}
+TexturedBackground {
+  texture "dusk"
+  luminosity 0
+}
+TexturedBackgroundLight {
+}
+E-puck {
+  translation -0.7700000000847862 0.3799999999998551 -5.622725664810799e-05
+  rotation 0.8165436189442952 0.5772837416392473 -5.867758815441818e-07 3.085395267193564e-09
+  controller "multi-agentrendezvous"
+  version "2"
+}
+E-puck {
+  translation -0.67 1.44 0.0999438
+  rotation 0.8165436189442952 0.5772837416392473 -5.867758815441818e-07 3.085395267193564e-09
+  name "e-puck(12)"
+  controller "multi-agentrendezvous"
+  version "2"
+}
+E-puck {
+  translation -1.55 1.62 0.0999438
+  rotation 0.8165436189442952 0.5772837416392473 -5.867758815441818e-07 3.085395267193564e-09
+  name "e-puck(13)"
+  controller "multi-agentrendezvous"
+  version "2"
+}
+E-puck {
+  translation -2.15 0.94 0.0999438
+  rotation 0.8165436189442952 0.5772837416392473 -5.867758815441818e-07 3.085395267193564e-09
+  name "e-puck(14)"
+  controller "multi-agentrendezvous"
+  version "2"
+}
+E-puck {
+  translation -1.49 -0.18 0.0999438
+  rotation 0.8165436189442952 0.5772837416392473 -5.867758815441818e-07 3.085395267193564e-09
+  name "e-puck(8)"
+  controller "multi-agentrendezvous"
+  version "2"
+}
+E-puck {
+  translation -1.97 0.38 0.0999438
+  rotation 0.8165436189442952 0.5772837416392473 -5.867758815441818e-07 3.085395267193564e-09
+  name "e-puck(9)"
+  controller "multi-agentrendezvous"
+  version "2"
+}
+E-puck {
+  translation -0.67 0.95 0.0999438
+  rotation 0.8165436189442952 0.5772837416392473 -5.867758815441818e-07 3.085395267193564e-09
+  name "e-puck(10)"
+  controller "multi-agentrendezvous"
+  version "2"
+}
+E-puck {
+  translation -0.89 -0.13 0.0999438
+  rotation 0.8165436189442952 0.5772837416392473 -5.867758815441818e-07 3.085395267193564e-09
+  name "e-puck(11)"
+  controller "multi-agentrendezvous"
+  version "2"
+}
+E-puck {
+  translation -1.33 1.07 0.0999438
+  rotation 0.8165436189442952 0.5772837416392473 -5.867758815441818e-07 3.085395267193564e-09
+  name "e-puck(7)"
+  controller "multi-agentrendezvous"
+  version "2"
+}
+E-puck {
+  translation -1.22 0.38 0.0099438
+  rotation 0.8165436189442952 0.5772837416392473 -5.867758815441818e-07 3.085395267193564e-09
+  name "e-puck(6)"
+  controller "multi-agentrendezvous"
+  version "2"
+}
+E-puck {
+  translation -0.08 0.38 0.039944
+  rotation 0.8165436189442952 0.5772837416392473 -5.867758815441818e-07 3.085395267193564e-09
+  name "e-puck(1)"
+  controller "multi-agentrendezvous"
+  version "2"
+}
+E-puck {
+  translation -0.57 -0.41 0.059944
+  rotation 0.8165436189442952 0.5772837416392473 -5.867758815441818e-07 3.085395267193564e-09
+  name "e-puck(2)"
+  controller "multi-agentrendezvous"
+  version "2"
+}
+E-puck {
+  translation 0.16 -0.26 -5.60019e-05
+  rotation 0.8165436189442952 0.5772837416392473 -5.867758815441818e-07 3.085395267193564e-09
+  name "e-puck(3)"
+  controller "multi-agentrendezvous"
+  version "2"
+}
+E-puck {
+  translation 0.34 0.38 -5.6e-05
+  rotation 0.8165436189442952 0.5772837416392473 -5.867758815441818e-07 3.085395267193564e-09
+  name "e-puck(4)"
+  controller "multi-agentrendezvous"
+  version "2"
+}
+E-puck {
+  translation -0.27 1.11 0.009944
+  rotation 0.8165436189442952 0.5772837416392473 -5.867758815441818e-07 3.085395267193564e-09
+  name "e-puck(5)"
+  controller "multi-agentrendezvous"
+  version "2"
+}
+Floor {
+}
