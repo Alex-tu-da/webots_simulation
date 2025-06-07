@@ -45,6 +45,19 @@ def on_message(client, userdata, msg):
     except Exception as e:
         print(f"⚠️ Fehler beim Empfangen: {e}")
 
+def send_position():
+    try:
+        x, y, z = pos()
+        angle = degree_grad()
+        msg = {
+            "id": MY_ID,
+            "position": [x, y],
+            "angle": angle
+        }
+        client.publish("robot_pos/all", json.dumps(msg))
+
+    except Exception as e:
+        print(f"❌ Fehler beim Senden der Position: {e}")
 
 # === MQTT-Client initialisieren ===
 client = mqtt.Client()
@@ -67,6 +80,12 @@ right_motor.setPosition(float('inf'))
 
 led0 = robot.getDevice("led0")
 led1 = robot.getDevice("led1")
+
+# IR-Sensoren holen und aktivieren
+ir_sensor = ['ps0', 'ps1', 'ps2', 'ps3', 'ps4', 'ps5', 'ps6', 'ps7']
+ir_sensors = [robot.getDevice(name) for name in ir_sensor]
+for s in ir_sensors:
+    s.enable(TIME_STEP)
 
 # === Arena-Grenzen & Steuerungskonstanten ===
 x_max = 1
@@ -102,27 +121,6 @@ def degree_grad():
 def set_motor_speeds(l, r):
     left_motor.setVelocity((7 / 1000) * l)
     right_motor.setVelocity((7 / 1000) * r)
-
-
-def send_position():
-    try:
-        x, y, _ = pos()
-        angle = degree_grad()
-        msg = {
-            "id": MY_ID,
-            "position": [x, y],
-            "angle": angle
-        }
-        client.publish("robot_pos/all", json.dumps(msg))
-
-        data[MY_ID] = {
-            "position": [x, y],
-            "angle": angle
-        }
-
-    except Exception as e:
-        print(f"❌ Fehler beim Senden der Position: {e}")
-
 
 # === Komplette Funktionen ===
 def is_inside_arena():
@@ -205,10 +203,41 @@ def check_and_send_hello():
         dist = dist_calculate(rid)
         if dist < 0.2:
             if rid not in helloRob:
-                helloRob.append(rid)  # 👈 ID merken
+                helloRob.append(rid)
                 nachricht = f"Hallo von Roboter {MY_ID}"
                 client.publish(f"robot/{rid}", nachricht)
                 print(f"Sende an robot/{rid}: {nachricht}")
+
+def avoid_collision_ir():
+    ir_values = [s.getValue() for s in ir_sensors]
+
+    # Sensorgruppen
+    front = [ir_values[0], ir_values[7]]  # ps0, ps1, ps2
+    right = [ir_values[2], ir_values[1]]  # ps3, ps4
+    left = [ir_values[5], ir_values[6]]   # ps6, ps7
+
+    # Schwelle für "zu nah"
+    threshold = 80
+
+    # Auswertung
+    if max(front) > threshold:
+        print("🚨 Hindernis vorne – STOPP")
+        if front[0] > front[1]:
+            set_motor_speeds(-100,  100)
+        else:
+            set_motor_speeds(-100, 100)
+        return True
+    elif max(left) > threshold:
+        print("↪️ Hindernis links – drehe rechts")
+        set_motor_speeds(200, 150)
+        return True
+    elif max(right) > threshold:
+        print("↩️ Hindernis rechts – drehe links")
+        set_motor_speeds(150, 200)
+        return True
+
+    return False  # keine Kollision erkannt
+
 
 # === Startbedingung ===
 set_motor_speeds(0, 0)
@@ -216,10 +245,14 @@ set_motor_speeds(0, 0)
 # === Hauptschleife ===
 while robot.step(TIME_STEP) != -1:
     send_position()
+    if MY_ID not in data:
+        continue
+    # === Hier scheiben ===
     
     check_and_send_hello()
     if is_inside_arena():
+        if avoid_collision_ir():
+            continue
         set_motor_speeds(random.randint(200, 500), random.randint(200, 500))
-
     else:
         turn_from_wand_mith_motors()
