@@ -6,10 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="3cc3e618-1afb-4e07-8f79-42188560c230" name="Changes" comment="-">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_first_simulation/controllers/MQTT_hello/MQTT_hello.py" beforeDir="false" afterPath="$PROJECT_DIR$/my_first_simulation/controllers/MQTT_hello/MQTT_hello.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_first_simulation/worlds/.robots_MQTT.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/my_first_simulation/worlds/.robots_MQTT.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_first_simulation/worlds/.robots_MQTT.wbproj" beforeDir="false" afterPath="$PROJECT_DIR$/my_first_simulation/worlds/.robots_MQTT.wbproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_first_simulation/worlds/robots_MQTT.wbt" beforeDir="false" afterPath="$PROJECT_DIR$/my_first_simulation/worlds/robots_MQTT.wbt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,21 +15,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Alex-tu-da"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Alex-tu-da&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Alex-tu-da/webots_simulation.git",
-    "accountId": "6a5e8790-6015-4bba-bb6b-01dc5a4925ac"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Alex-tu-da/webots_simulation.git&quot;,
+    &quot;accountId&quot;: &quot;6a5e8790-6015-4bba-bb6b-01dc5a4925ac&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="2yC5FiArxMRzVZIw0dUha7qzSaz" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -70,7 +66,8 @@
       <option name="presentableId" value="Default" />
       <updated>1749325612989</updated>
       <workItem from="1749325614308" duration="350000" />
-      <workItem from="1749325965387" duration="9246000" />
+      <workItem from="1749325965387" duration="9268000" />
+      <workItem from="1749577440385" duration="682000" />
     </task>
     <task id="LOCAL-00001" summary="-">
       <option name="closed" value="true" />
@@ -88,7 +85,23 @@
       <option name="project" value="LOCAL" />
       <updated>1749330661547</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="-">
+      <option name="closed" value="true" />
+      <created>1749336942891</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1749336942891</updated>
+    </task>
+    <task id="LOCAL-00004" summary="-">
+      <option name="closed" value="true" />
+      <created>1749578877412</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1749578877412</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
