@@ -153,19 +153,7 @@ def collision():
     ir_values = [sensor.getValue() for sensor in ir_sensors]
     
     
-    if ir_values[7] > 100 or  ir_values[0] > 100:
-        
-        if (ir_values[6] > 100 or ir_values[5] > 100) :
-            set_motor_speeds(200, -100)
-        elif (ir_values[1] > 100 or ir_values[2] > 100) :
-            set_motor_speeds(-100, 200)
-    else:
-        if (ir_values[6] > 150 ) :
-            set_motor_speeds(150, -50)
-        elif (ir_values[1] > 150 ) :
-            set_motor_speeds(-50, 150)
-        else:
-            set_motor_speeds(400, 400)
+    
 
 
 # === Startbedingung ===
@@ -176,6 +164,10 @@ send_position()
 while robot.step(TIME_STEP) != -1:
     send_position()
     
-    collision()
+    ir_values = [sensor.getValue() for sensor in ir_sensors]
+    print(ir_values)
+    
+    
+    
 
     

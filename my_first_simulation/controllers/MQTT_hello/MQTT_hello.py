@@ -217,22 +217,19 @@ def avoid_collision_ir():
     left = [ir_values[5], ir_values[6]]   # ps6, ps7
 
     # Schwelle für "zu nah"
-    threshold = 80
+    threshold = 150
 
     # Auswertung
     if max(front) > threshold:
-        print("🚨 Hindernis vorne – STOPP")
         if front[0] > front[1]:
             set_motor_speeds(-100,  100)
         else:
             set_motor_speeds(-100, 100)
         return True
     elif max(left) > threshold:
-        print("↪️ Hindernis links – drehe rechts")
         set_motor_speeds(200, 150)
         return True
     elif max(right) > threshold:
-        print("↩️ Hindernis rechts – drehe links")
         set_motor_speeds(150, 200)
         return True
 
