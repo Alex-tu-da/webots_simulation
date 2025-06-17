@@ -152,6 +152,7 @@ def turn_motors_to(obj_id):
 def collision():
     ir_values = [sensor.getValue() for sensor in ir_sensors]
     
+    seiten = (ir_values[2] + ir_values[5]) / 2
     
     
 

@@ -17,42 +17,49 @@ BROKER = "localhost"
 PORT = 1883
 TIME_STEP = 100
 robot = Robot()
-MY_ID = "" +robot.getName()
+my_robot_id = "" +robot.getName()
 
 data = {}
 helloRob = []
 
 # === MQTT-Callbackfunktionen ===
 def on_connect(client, userdata, flags, rc):
-    print(f"[{MY_ID}] Verbunden mit MQTT (Code {rc})")
+    print(f"[{my_robot_id}] Verbunden mit MQTT (Code {rc})")
     client.subscribe("robot_pos/all")
-    client.subscribe(f"robot/{MY_ID}")
-
+    client.subscribe(f"robotHello/{my_robot_id}")
 
 # on_message:
 def on_message(client, userdata, msg):
     global data
-    try:
-        if msg.topic == "robot_pos/all":
-            incoming = json.loads(msg.payload.decode())
-            rid = incoming["id"]
-            data[rid] = {
-                "position": incoming["position"],
-                "angle": incoming["angle"]
-            }
-        elif msg.topic == f"robot/{MY_ID}":
-            print(f"Nachricht empfangen: {msg.payload.decode()}")
-    except Exception as e:
-        print(f"⚠️ Fehler beim Empfangen: {e}")
+    topic = msg.topic
+    payload_str = msg.payload.decode()
+
+    if topic == "robot_pos/all":
+        try:
+            incoming = json.loads(payload_str)
+            for rid, rob_data in incoming.items():
+                data[rid] = {
+                    "position": rob_data['position'],
+                    "angle": rob_data['angle']
+                }
+        except json.JSONDecodeError:
+            print(f"Ungültiges JSON auf topic {topic}: {payload_str}")
+
+    elif topic.startswith("robotHello/"):
+        print(f"Nachricht empfangen: {payload_str}")
+
+    else:
+        print(f"Unbekanntes Topic: {topic}, payload: {payload_str}")
 
 def send_position():
     try:
         x, y, z = pos()
         angle = degree_grad()
         msg = {
-            "id": MY_ID,
-            "position": [x, y],
-            "angle": angle
+            my_robot_id: {    # das Robot-ID als Schlüssel
+                "position": [x, y],
+                "angle": angle
+            }
         }
         client.publish("robot_pos/all", json.dumps(msg))
 
@@ -124,16 +131,16 @@ def set_motor_speeds(l, r):
 
 # === Komplette Funktionen ===
 def is_inside_arena():
-    return (x_max - outside_diff > data[MY_ID]["position"][0] > outside_diff
-            and y_max - outside_diff > data[MY_ID]["position"][1] > outside_diff)
+    return (x_max - outside_diff > data[my_robot_id]["position"][0] > outside_diff
+            and y_max - outside_diff > data[my_robot_id]["position"][1] > outside_diff)
 
 def angle_calculate(target_id):
-    src = data[MY_ID]["position"]
+    src = data[my_robot_id]["position"]
     dst = data[target_id]["position"]
     return math.atan2(dst[0] - src[0], dst[1] - src[1])
 
 def dist_calculate(target_id):
-    src = data[MY_ID]["position"]
+    src = data[my_robot_id]["position"]
     dst = data[target_id]["position"]
     return math.hypot(dst[1] - src[1], dst[0] - src[0])
 
@@ -141,7 +148,7 @@ def turn_motors_to(obj_id):
     if obj_id is None:
         return
     target_angle = angle_calculate(obj_id)
-    current_angle = math.radians(data[MY_ID]["angle"])
+    current_angle = math.radians(data[my_robot_id]["angle"])
     error = (target_angle - current_angle + math.pi) % (2 * math.pi) - math.pi
 
     output = pd.update(error)
@@ -159,8 +166,8 @@ def turn_motors_to(obj_id):
 def turn_from_wand_mith_motors():
     target_angle = None
 
-    x = data[MY_ID]["position"][0]
-    y = data[MY_ID]["position"][1]
+    x = data[my_robot_id]["position"][0]
+    y = data[my_robot_id]["position"][1]
 
     if x < outside_diff and y < outside_diff:
         target_angle = 45
@@ -182,7 +189,7 @@ def turn_from_wand_mith_motors():
     if target_angle is None:
         return
     target_angle = math.radians(target_angle)
-    current_angle = math.radians(data[MY_ID]["angle"])
+    current_angle = math.radians(data[my_robot_id]["angle"])
 
     error = (target_angle - current_angle + math.pi) % (2 * math.pi) - math.pi
     if not (-math.radians(diff_angle) < error < math.radians(diff_angle)):
@@ -198,15 +205,15 @@ def turn_from_wand_mith_motors():
 
 def check_and_send_hello():
     for rid in data:
-        if rid == MY_ID:
+        if rid == my_robot_id:
             continue
         dist = dist_calculate(rid)
         if dist < 0.2:
             if rid not in helloRob:
                 helloRob.append(rid)
-                nachricht = f"Hallo von Roboter {MY_ID}"
-                client.publish(f"robot/{rid}", nachricht)
-                print(f"Sende an robot/{rid}: {nachricht}")
+                nachricht = f"Hallo von Roboter {my_robot_id}"
+                client.publish(f"robotHello/{rid}", nachricht)
+                print(f"Sende an Robot {rid}: {nachricht}")
 
 def avoid_collision_ir():
     ir_values = [s.getValue() for s in ir_sensors]
@@ -242,7 +249,7 @@ set_motor_speeds(0, 0)
 # === Hauptschleife ===
 while robot.step(TIME_STEP) != -1:
     send_position()
-    if MY_ID not in data:
+    if my_robot_id not in data:
         continue
     # === Hier scheiben ===
     
