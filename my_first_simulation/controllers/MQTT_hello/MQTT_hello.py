@@ -1,9 +1,7 @@
 import sys
 import os
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from PD_Controller import PDController
-
 from controller import Robot
 import math
 import time
@@ -109,21 +107,17 @@ diff_angle_follow = 90
 
 pd = PDController(500, 300, 10)
 
-
 # === Hilfsfunktionen ===
 def pos():
     return gps.getValues()
-
 
 def degree_rad():
     values = compass.getValues()
     angle = math.atan2(values[0], values[1])
     return -angle + math.pi / 2
 
-
 def degree_grad():
     return math.degrees(degree_rad()) % 360
-
 
 def set_motor_speeds(l, r):
     left_motor.setVelocity((7 / 1000) * l)
@@ -241,7 +235,6 @@ def avoid_collision_ir():
         return True
 
     return False  # keine Kollision erkannt
-
 
 # === Startbedingung ===
 set_motor_speeds(0, 0)
